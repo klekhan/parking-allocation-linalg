@@ -13,6 +13,7 @@ Features:
 """
 
 import os
+import threading
 from typing import List, Optional
 from fastapi import FastAPI, APIRouter, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -32,8 +33,13 @@ app = FastAPI(
 
 @app.on_event("startup")
 def startup_event():
-    """Pre-warm linear algebra pipeline so first request completes instantly."""
-    get_math_pipeline()
+    """Pre-warm linear algebra pipeline in background thread so server starts instantly."""
+    def _warm():
+        try:
+            get_math_pipeline()
+        except Exception as e:
+            print(f"[startup] Pipeline pre-warm error: {e}")
+    threading.Thread(target=_warm, daemon=True).start()
 
 app.add_middleware(
     CORSMiddleware,
