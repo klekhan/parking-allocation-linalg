@@ -304,3 +304,24 @@ def route_reset():
         if s["status"] != 2:
             _live_lot_status[s["spot_id"]] = 1 if rng.rand() < 0.25 else 0
     return {"success": True, "message": "Lot reset.", "lot": _lot_state_response()}
+
+# ── Serve React SPA (for standalone Render deployment) ──────────────────────
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi import HTTPException
+
+DIST_DIR = os.path.join(ROOT, "frontend", "dist")
+ASSETS_DIR = os.path.join(DIST_DIR, "assets")
+
+if os.path.exists(ASSETS_DIR):
+    app.mount("/assets", StaticFiles(directory=ASSETS_DIR), name="assets")
+
+@app.api_route("/{full_path:path}", methods=["GET", "HEAD"])
+def serve_spa(full_path: str):
+    """Serve built React SPA; API 404s are handled above."""
+    if full_path.startswith("api"):
+        raise HTTPException(status_code=404, detail="Not found")
+    index_file = os.path.join(DIST_DIR, "index.html")
+    if os.path.exists(index_file):
+        return FileResponse(index_file)
+    return JSONResponse({"message": "Backend running. Build frontend to serve SPA."})
