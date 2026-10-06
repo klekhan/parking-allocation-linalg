@@ -157,7 +157,7 @@ ASSETS_DIR = os.path.join(DIST_DIR, "assets")
 if os.path.exists(ASSETS_DIR):
     app.mount("/assets", StaticFiles(directory=ASSETS_DIR), name="assets")
 
-@app.get("/{full_path:path}")
+@app.api_route("/{full_path:path}", methods=["GET", "HEAD"])
 def serve_frontend_spa(full_path: str):
     """Serves built React SPA for standalone single-command run."""
     if full_path.startswith("api"):
