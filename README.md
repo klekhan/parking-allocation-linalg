@@ -131,3 +131,9 @@ Math_Project/
 ## 7. Citation & Attribution
 
 Data: **Stolfi, D. H. (2017). Parking Birmingham Dataset. UCI Machine Learning Repository.** Available under Creative Commons Attribution 4.0 International (CC BY 4.0).
+
+---
+
+## 8. Contributors
+
+See [CONTRIBUTORS.md](./CONTRIBUTORS.md) for the full list of contributors and how to contribute to this project.
